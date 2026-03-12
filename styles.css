@@ -987,6 +987,7 @@ footer .signature {
   pointer-events: none;
   transform: translate(-50%, -50%);
   animation: kissBurst 3s ease-out forwards;
+  filter: sepia(1) saturate(9) hue-rotate(-40deg) brightness(1.1);
 }
 
 @keyframes kissBurst {
