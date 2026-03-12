@@ -7,10 +7,12 @@
 body {
   font-family: 'Poppins', sans-serif;
   min-height: 100vh;
+  min-height: 100dvh;
   background: linear-gradient(180deg, #0c1445 0%, #1a237e 25%, #1a1a2e 50%, #16213e 75%, #0f3460 100%);
   color: #eee;
   overflow-x: hidden;
   position: relative;
+  padding-bottom: env(safe-area-inset-bottom, 0);
 }
 
 /* Main content - single-column layout with consistent width */
@@ -68,8 +70,8 @@ body {
 /* Music toggle button */
 .music-toggle {
   position: fixed;
-  bottom: 2rem;
-  right: 1.5rem;
+  bottom: max(2rem, env(safe-area-inset-bottom, 2rem));
+  right: max(1.5rem, env(safe-area-inset-right, 1.5rem));
   padding: 0.5rem 1rem;
   font-size: 0.9rem;
   background: rgba(255, 215, 155, 0.15);
@@ -91,6 +93,14 @@ body {
 .music-toggle:hover {
   background: rgba(255, 215, 155, 0.25);
   transform: scale(1.05);
+}
+@media (hover: none) {
+  .music-toggle:hover {
+    transform: none;
+  }
+  .music-toggle:active {
+    background: rgba(255, 215, 155, 0.3);
+  }
 }
 
 .music-prompt {
@@ -124,11 +134,11 @@ body {
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 20px;
+  min-height: 20px;
+  padding: 0 10px calc(10px + env(safe-area-inset-bottom, 0));
   display: flex;
   justify-content: space-around;
   align-items: center;
-  padding: 0 10px;
   pointer-events: none;
   z-index: 2;
 }
@@ -431,6 +441,8 @@ body {
   font-size: clamp(0.95rem, 2vw, 1.1rem);
   backdrop-filter: blur(10px);
   transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  touch-action: manipulation;
+  min-height: 44px;
 }
 
 .wish-card:hover {
@@ -517,6 +529,7 @@ footer .signature {
   display: inline-block;
   cursor: pointer;
   perspective: 600px;
+  touch-action: manipulation;
 }
 
 .gift-box {
@@ -821,6 +834,7 @@ footer .signature {
   display: block;
   margin: 0.75rem 1.25rem 0.5rem;
   padding: 0.8rem 1.25rem;
+  min-height: 44px;
   background: linear-gradient(135deg, #107c10 0%, #0e5a0e 100%);
   color: #fff !important;
   text-decoration: none;
@@ -831,6 +845,7 @@ footer .signature {
   transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   box-shadow: 0 4px 15px rgba(16, 124, 16, 0.45);
   border: none;
+  touch-action: manipulation;
 }
 
 .takeoff-btn:hover {
@@ -1156,6 +1171,7 @@ footer .signature {
   flex-direction: column;
   align-items: center;
   transition: transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  touch-action: manipulation;
 }
 
 .candle:hover .flame:not(.blowing-out) {
@@ -1329,7 +1345,7 @@ footer .signature {
   }
 
   .gift-inside {
-    min-width: 280px;
+    min-width: min(280px, calc(100vw - 2rem));
     max-width: calc(100% - 2rem);
     left: 50%;
   }
@@ -1377,4 +1393,35 @@ footer .signature {
     padding: 1.5rem;
     line-height: 1.5;
   }
+}
+
+/* Extra small screens */
+@media (max-width: 380px) {
+  .countdown-unit {
+    min-width: 50px;
+    padding: 0.35rem 0.5rem;
+    font-size: 0.9rem;
+  }
+  .countdown-unit span:first-child {
+    font-size: 1.1rem;
+  }
+  .countdown-sep {
+    font-size: 1.2rem;
+  }
+  .hero h1 {
+    font-size: 1.75rem;
+  }
+  .gift-inside {
+    min-width: 260px;
+  }
+}
+
+/* Reduced motion - toned down decorative animations */
+@media (prefers-reduced-motion: reduce) {
+  .star { animation: none; opacity: 0.7; }
+  .runway-light { animation: none; opacity: 0.9; }
+  .cloud { animation: none; }
+  .plane-flyby { animation: none; }
+  .level-badge, .cake, .hero-plane { animation: none; }
+  .gift-instruction { animation: none; }
 }

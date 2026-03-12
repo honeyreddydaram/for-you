@@ -32,43 +32,78 @@ function updateCountdown() {
 updateCountdown();
 setInterval(updateCountdown, 1000);
 
-// Happy Birthday tune - Web Audio API
+// Happy Birthday tune - HTML5 Audio with generated WAV (works on mobile)
 const musicToggle = document.getElementById('musicToggle');
 let isPlaying = false;
 let hasAutoPlayed = false;
 
-function playNote(ctx, masterGain, freq, startTime, duration) {
-  const osc = ctx.createOscillator();
-  const g = ctx.createGain();
-  osc.connect(g);
-  g.connect(masterGain);
-  osc.frequency.value = freq;
-  osc.type = 'triangle';
-  g.gain.setValueAtTime(0, startTime);
-  g.gain.linearRampToValueAtTime(0.5, startTime + 0.03);
-  g.gain.linearRampToValueAtTime(0.08, startTime + duration);
-  osc.start(startTime);
-  osc.stop(startTime + duration + 0.05);
-}
-
-async function playHappyBirthdayWebAudio() {
-  const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-  if (!AudioContextClass) throw new Error('Web Audio not supported');
-  const ctx = new AudioContextClass();
-  const masterGain = ctx.createGain();
-  masterGain.gain.value = 1;
-  masterGain.connect(ctx.destination);
-
+function generateHappyBirthdayWav() {
+  const SR = 44100;
   const notes = [262, 262, 294, 262, 349, 330, 262, 262, 294, 262, 392, 349, 262, 262, 523, 440, 349, 330, 294, 466, 466, 440, 349, 392, 349];
   const durs = [0.4, 0.4, 0.6, 0.6, 0.6, 1, 0.4, 0.4, 0.6, 0.6, 0.6, 1, 0.4, 0.4, 0.6, 0.6, 0.6, 0.6, 1, 0.4, 0.4, 0.6, 0.6, 0.6, 1];
-  let t = ctx.currentTime;
+  let totalSamples = 0;
+  for (let i = 0; i < notes.length; i++) totalSamples += Math.floor(SR * ((durs[i] || 0.5) + 0.05));
+  const samples = new Int16Array(totalSamples);
+  let pos = 0;
   for (let i = 0; i < notes.length; i++) {
-    playNote(ctx, masterGain, notes[i], t, durs[i] || 0.5);
-    t += (durs[i] || 0.5) + 0.05;
+    const freq = notes[i];
+    const len = Math.floor(SR * (durs[i] || 0.5));
+    const fadeIn = Math.min(1000, len >> 2);
+    const fadeOut = Math.min(2000, len >> 1);
+    for (let j = 0; j < len && pos < totalSamples; j++) {
+      let g = 0.4;
+      if (j < fadeIn) g *= j / fadeIn;
+      if (j > len - fadeOut) g *= (len - j) / fadeOut;
+      samples[pos++] = Math.floor(32767 * g * Math.sin(2 * Math.PI * freq * j / SR));
+    }
+    pos += Math.floor(SR * 0.05);
   }
-  const duration = (t - ctx.currentTime) * 1000;
-  if (ctx.state === 'suspended') await ctx.resume();
-  return duration;
+  const dataLen = totalSamples * 2;
+  const buf = new ArrayBuffer(44 + dataLen);
+  const v = new DataView(buf);
+  const writeStr = (offset, s) => { for (let i = 0; i < s.length; i++) v.setUint8(offset + i, s.charCodeAt(i)); };
+  writeStr(0, 'RIFF');
+  v.setUint32(4, 36 + dataLen, true);
+  writeStr(8, 'WAVE');
+  writeStr(12, 'fmt ');
+  v.setUint32(16, 16, true);
+  v.setUint16(20, 1, true);
+  v.setUint16(22, 1, true);
+  v.setUint32(24, SR, true);
+  v.setUint32(28, SR * 2, true);
+  v.setUint16(32, 2, true);
+  v.setUint16(34, 16, true);
+  writeStr(36, 'data');
+  v.setUint32(40, dataLen, true);
+  for (let i = 0; i < totalSamples; i++) v.setInt16(44 + i * 2, samples[i], true);
+  return new Blob([buf], { type: 'audio/wav' });
+}
+
+function createAudioPlayer(src) {
+  const audio = new Audio(src);
+  audio.volume = 0.8;
+  audio.playsInline = true;
+  return audio;
+}
+
+async function playHappyBirthday() {
+  const blob = generateHappyBirthdayWav();
+  const url = URL.createObjectURL(blob);
+  const audio = createAudioPlayer(url);
+  return new Promise((resolve, reject) => {
+    audio.onended = () => {
+      URL.revokeObjectURL(url);
+      resolve(15000);
+    };
+    audio.onerror = (e) => {
+      URL.revokeObjectURL(url);
+      reject(new Error('Audio failed'));
+    };
+    const p = audio.play();
+    if (p && typeof p.then === 'function') {
+      p.then(() => {}).catch(reject);
+    }
+  });
 }
 
 async function startMusic() {
@@ -81,14 +116,14 @@ async function startMusic() {
 
   let duration = 20000;
   try {
-    duration = await playHappyBirthdayWebAudio();
+    duration = await playHappyBirthday();
   } catch (e) {
     const fallback = document.getElementById('birthdayAudioFallback');
-    if (fallback && fallback.src) {
+    if (fallback && fallback.getAttribute('src')) {
       try {
-        fallback.currentTime = 0;
-        await fallback.play();
-        duration = (fallback.duration || 15) * 1000;
+        const audio = createAudioPlayer(fallback.getAttribute('src'));
+        await audio.play();
+        duration = (audio.duration && isFinite(audio.duration)) ? audio.duration * 1000 : 15000;
       } catch (e2) {
         if (musicToggle) musicToggle.textContent = '🎵 Play music';
         musicToggle.disabled = false;
