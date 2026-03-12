@@ -184,18 +184,21 @@ giftBox.addEventListener('click', (e) => {
 giftInside.addEventListener('click', (e) => e.stopPropagation());
 
 // Runway takeoff animation on Xbox button click
-const takeoffOverlay = document.getElementById('takeoff-overlay');
+const takeoffZone = document.getElementById('takeoff-zone');
 const takeoffBtn = document.querySelector('.takeoff-btn');
 
 const XBOX_URL = 'https://www.xbox.com/en-US/games/store/microsoft-flight-simulator-2024/9P38D19T7LRV/0010';
 
 takeoffBtn.addEventListener('click', (e) => {
   e.preventDefault();
-  takeoffOverlay.classList.add('active');
+  takeoffZone.scrollIntoView({ behavior: 'smooth', block: 'center' });
   setTimeout(() => {
-    takeoffOverlay.classList.remove('active');
-    window.location.href = XBOX_URL;
-  }, 1500);
+    takeoffZone.classList.add('active');
+    setTimeout(() => {
+      takeoffZone.classList.remove('active');
+      window.location.href = XBOX_URL;
+    }, 1500);
+  }, 400);
 });
 
 // Birthday cake - blow out candles on individual click

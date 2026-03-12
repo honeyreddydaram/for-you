@@ -44,38 +44,38 @@
       40% { opacity: 0.7; transform: translate3d(0, -8px, 0) scale(0.9); }
       100% { opacity: 0; transform: translate3d(0, -25px, 0) scale(0.4); }
     }
-    .takeoff-overlay {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
+    .takeoff-zone {
+      position: relative;
+      width: 100%;
+      min-height: 120px;
+      margin-top: 3rem;
+      overflow: visible;
       pointer-events: none;
-      z-index: 2000;
-      opacity: 0;
-      transition: opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    }
-    .takeoff-overlay.active {
-      opacity: 1;
     }
     .runway-strip {
       position: absolute;
-      bottom: 40%;
+      bottom: 20px;
       left: 0;
       width: 100%;
       height: 4px;
       background: repeating-linear-gradient(90deg, rgba(255,255,255,0.4) 0, rgba(255,255,255,0.4) 30px, transparent 30px, transparent 50px);
-      opacity: 0.8;
+      opacity: 0;
+      transition: opacity 0.3s ease;
     }
     .takeoff-plane {
       position: absolute;
-      bottom: 39%;
+      bottom: 16px;
       left: 0;
       font-size: 2.5rem;
       transform: translate3d(-60px, 0, 0) rotate(-5deg);
       opacity: 0;
       will-change: transform;
     }
-    .takeoff-overlay.active .takeoff-plane {
+    .takeoff-zone.active .runway-strip,
+    .takeoff-zone.active .takeoff-plane {
       opacity: 1;
+    }
+    .takeoff-zone.active .takeoff-plane {
       animation: runwayTakeoff 1.5s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
     }
     @keyframes runwayTakeoff {
@@ -174,9 +174,9 @@
   <div class="wishes scroll-reveal">
     <div class="wish-card" data-emoji="✈️">✈️ Clear skies & smooth flights</div>
     <div class="wish-card" data-emoji="🌟">🌟 May all your dreams come true</div>
-    <div class="wish-card" data-emoji="😊">😊 Endless happiness</div>
+    <div class="wish-card" data-emoji="😊">😊 Unlimited happiness</div>
     <div class="wish-card" data-emoji="🎉">🎉 The best year ahead</div>
-    <div class="wish-card" data-emoji="💝">💝 Love & laughter always</div>
+    <div class="wish-card" data-emoji="💝">💝 Love & laughter forever</div>
   </div>
 
   <div id="emoji-rain" class="emoji-rain"></div>
@@ -245,6 +245,11 @@
       </div>
     </div>
   </section>
+
+  <div id="takeoff-zone" class="takeoff-zone">
+    <div class="runway-strip"></div>
+    <div class="takeoff-plane">✈️</div>
+  </div>
 
   <footer class="scroll-reveal">
     <p>Wherever life takes you,
