@@ -55,7 +55,6 @@ async function playHappyBirthdayWebAudio() {
   const AudioContextClass = window.AudioContext || window.webkitAudioContext;
   if (!AudioContextClass) throw new Error('Web Audio not supported');
   const ctx = new AudioContextClass();
-  await ctx.resume();
   const masterGain = ctx.createGain();
   masterGain.gain.value = 1;
   masterGain.connect(ctx.destination);
@@ -67,7 +66,9 @@ async function playHappyBirthdayWebAudio() {
     playNote(ctx, masterGain, notes[i], t, durs[i] || 0.5);
     t += (durs[i] || 0.5) + 0.05;
   }
-  return (t - ctx.currentTime) * 1000;
+  const duration = (t - ctx.currentTime) * 1000;
+  if (ctx.state === 'suspended') await ctx.resume();
+  return duration;
 }
 
 async function startMusic() {
@@ -82,10 +83,24 @@ async function startMusic() {
   try {
     duration = await playHappyBirthdayWebAudio();
   } catch (e) {
-    if (musicToggle) musicToggle.textContent = '🎵 Play music';
-    musicToggle.disabled = false;
-    isPlaying = false;
-    return;
+    const fallback = document.getElementById('birthdayAudioFallback');
+    if (fallback && fallback.src) {
+      try {
+        fallback.currentTime = 0;
+        await fallback.play();
+        duration = (fallback.duration || 15) * 1000;
+      } catch (e2) {
+        if (musicToggle) musicToggle.textContent = '🎵 Play music';
+        musicToggle.disabled = false;
+        isPlaying = false;
+        return;
+      }
+    } else {
+      if (musicToggle) musicToggle.textContent = '🎵 Play music';
+      musicToggle.disabled = false;
+      isPlaying = false;
+      return;
+    }
   }
 
   setTimeout(() => {
@@ -113,8 +128,14 @@ function hideMusicPromptAndPlay() {
     tryAutoPlay();
   }
 }
-musicPrompt?.addEventListener('click', hideMusicPromptAndPlay);
-musicPrompt?.addEventListener('touchstart', hideMusicPromptAndPlay, { passive: true });
+function handleMusicStart(e) {
+  hideMusicPromptAndPlay();
+}
+musicPrompt?.addEventListener('click', handleMusicStart);
+musicPrompt?.addEventListener('touchstart', function(e) {
+  e.preventDefault();
+  handleMusicStart();
+}, { passive: false });
 
 document.addEventListener('click', (e) => {
   if (e.target.closest('.music-toggle')) return;

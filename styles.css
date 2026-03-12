@@ -80,6 +80,13 @@ body {
   z-index: 100;
   backdrop-filter: blur(8px);
   transition: background 0.3s, transform 0.2s;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  min-height: 44px;
+  min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 .music-toggle:hover {
   background: rgba(255, 215, 155, 0.25);
@@ -92,10 +99,12 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(12, 20, 69, 0.85);
+  background: rgba(12, 20, 69, 0.9);
   z-index: 500;
   cursor: pointer;
   transition: opacity 0.5s;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 .music-prompt.hidden {
   pointer-events: none;
@@ -106,6 +115,7 @@ body {
   color: #ffd89b;
   padding: 2rem;
   text-align: center;
+  max-width: 90%;
 }
 
 /* Runway lights at bottom */
@@ -1352,9 +1362,19 @@ footer .signature {
   }
 
   .music-toggle {
-    bottom: 2.5rem;
-    right: 1rem;
-    padding: 0.4rem 0.8rem;
-    font-size: 0.85rem;
+    bottom: max(2.5rem, env(safe-area-inset-bottom, 2.5rem));
+    right: max(1rem, env(safe-area-inset-right, 1rem));
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .music-prompt {
+    padding: env(safe-area-inset-top, 0) env(safe-area-inset-right, 0) env(safe-area-inset-bottom, 0) env(safe-area-inset-left, 0);
+  }
+
+  .music-prompt p {
+    font-size: 1.2rem;
+    padding: 1.5rem;
+    line-height: 1.5;
   }
 }
