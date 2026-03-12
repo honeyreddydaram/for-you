@@ -207,6 +207,34 @@ const birthdayCakeSection = document.getElementById('birthdayCakeSection');
 const smokeContainer = document.getElementById('smokeContainer');
 const positions = [25, 50, 75];
 
+function launchKissBurst() {
+  const kisses = ['💋', '💋', '💋'];
+  const container = document.createElement('div');
+  container.className = 'kiss-burst-container';
+  document.body.appendChild(container);
+
+  const cols = 28;
+  const rows = 18;
+  const stepX = 100 / cols;
+  const stepY = 100 / rows;
+
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      const kiss = document.createElement('span');
+      kiss.className = 'kiss-burst-emoji';
+      kiss.textContent = kisses[Math.floor(Math.random() * kisses.length)];
+      const offsetX = (Math.random() - 0.5) * stepX * 0.8;
+      const offsetY = (Math.random() - 0.5) * stepY * 0.8;
+      kiss.style.left = (col * stepX + stepX / 2 + offsetX) + '%';
+      kiss.style.top = (row * stepY + stepY / 2 + offsetY) + '%';
+      kiss.style.animationDelay = (Math.random() * 0.3) + 's';
+      container.appendChild(kiss);
+    }
+  }
+
+  setTimeout(() => container.remove(), 3500);
+}
+
 function blowCandle(candle, i) {
   if (candle.classList.contains('blown-out')) return;
 
@@ -230,6 +258,7 @@ function blowCandle(candle, i) {
     if (blownCount === allCandles.length) {
       aviationCake.classList.add('blown-out');
       birthdayCakeSection.classList.add('all-blown');
+      launchKissBurst();
       setTimeout(() => {
         birthdayCakeSection.classList.add('show-message');
       }, 600);
