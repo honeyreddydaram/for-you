@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Birthday! 🎂</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .heart-plane-flight {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 998;
+      overflow: hidden;
+    }
+    .heart-plane-container {
+      position: absolute;
+      left: 0;
+      font-size: 2.5rem;
+      animation: heartPlaneFly 9s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+      transform-origin: center;
+      will-change: transform;
+    }
+    @keyframes heartPlaneFly {
+      0% { transform: translate3d(-80px, 0, 0) rotate(-5deg); }
+      100% { transform: translate3d(calc(100vw + 80px), -15px, 0) rotate(5deg); }
+    }
+    .heart-smoke {
+      position: fixed;
+      font-size: 1rem;
+      opacity: 0;
+      animation: heartFade 4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      pointer-events: none;
+      z-index: 997;
+    }
+    @keyframes heartFade {
+      0% { opacity: 0.95; transform: translate3d(0, 0, 0) scale(1); }
+      40% { opacity: 0.7; transform: translate3d(0, -8px, 0) scale(0.9); }
+      100% { opacity: 0; transform: translate3d(0, -25px, 0) scale(0.4); }
+    }
+    .takeoff-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 2000;
+      opacity: 0;
+      transition: opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .takeoff-overlay.active {
+      opacity: 1;
+    }
+    .runway-strip {
+      position: absolute;
+      bottom: 12%;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: repeating-linear-gradient(90deg, rgba(255,255,255,0.4) 0, rgba(255,255,255,0.4) 30px, transparent 30px, transparent 50px);
+      opacity: 0.8;
+    }
+    .takeoff-plane {
+      position: absolute;
+      bottom: 11%;
+      left: 0;
+      font-size: 2.5rem;
+      transform: translate3d(-60px, 0, 0) rotate(-5deg);
+      opacity: 0;
+      will-change: transform;
+    }
+    .takeoff-overlay.active .takeoff-plane {
+      opacity: 1;
+      animation: runwayTakeoff 1.5s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+    }
+    @keyframes runwayTakeoff {
+      0% {
+        transform: translateX(-60px) translateY(0) rotate(-5deg) scale(0.9);
+      }
+      40% {
+        transform: translateX(40vw) translateY(0) rotate(-2deg) scale(1);
+      }
+      100% {
+        transform: translateX(calc(100vw + 80px)) translateY(-40px) rotate(8deg) scale(1.1);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Aviation background - Night Sky -->
+  <div class="aviation-bg">
+    <div class="stars-container" id="starsContainer"></div>
+    <div class="cloud cloud-1">☁️</div>
+    <div class="cloud cloud-2">☁️</div>
+    <div class="cloud cloud-3">☁️</div>
+    <div class="runway-line"></div>
+  </div>
+  <div class="runway-lights" id="runwayLights"></div>
+
+  <main class="main-content">
+  <div class="countdown-section scroll-reveal" id="countdownSection">
+    <div class="countdown-timer" id="countdownTimer">
+      <span class="countdown-unit"><span id="countDays">00</span> <small>Days</small></span>
+      <span class="countdown-sep">:</span>
+      <span class="countdown-unit"><span id="countHours">00</span> <small>Hours</small></span>
+      <span class="countdown-sep">:</span>
+      <span class="countdown-unit"><span id="countMinutes">00</span> <small>Minutes</small></span>
+      <span class="countdown-sep">:</span>
+      <span class="countdown-unit"><span id="countSeconds">00</span> <small>Seconds</small></span>
+    </div>
+    <div class="countdown-done" id="countdownDone">
+      Happy 23rd Birthday Arshuluuuuuu!!! 🎂✈️
+    </div>
+  </div>
+
+  <div class="hero scroll-reveal">
+    <span class="level-badge">Level 23 Unlocked 🎮</span>
+    <h1>Happy Birthday Arshuluuuuuu<span class="heart">♥</span> </h1>
+    <p class="subtitle">Wishing you the most wonderful day, Future Captain!</p>
+    <p class="hero-tagline">23 years of awesomeness and still climbing higher ✈️</p>
+    <div class="hero-emojis">
+      <span class="hero-plane">✈️</span>
+      <span class="cake">🎂</span>
+      <span class="hero-plane hero-plane-2">🛩️</span>
+    </div>
+  </div>
+
+  <!-- Interactive Birthday Cake -->
+  <section class="birthday-cake-section scroll-reveal" id="birthdayCakeSection">
+    <p class="cake-hint">👆 Click each candle to blow it out!</p>
+    <div class="aviation-cake" id="aviationCake">
+      <div class="cake-base">
+        <div class="cake-layer cake-top"></div>
+        <div class="cake-layer cake-bottom"></div>
+        <div class="cake-23">23</div>
+      </div>
+      <div class="candles">
+        <div class="candle" data-candle="1">
+          <div class="flame"></div>
+          <div class="candle-stick"></div>
+        </div>
+        <div class="candle" data-candle="2">
+          <div class="flame"></div>
+          <div class="candle-stick"></div>
+        </div>
+        <div class="candle" data-candle="3">
+          <div class="flame"></div>
+          <div class="candle-stick"></div>
+        </div>
+      </div>
+      <div class="smoke-container" id="smokeContainer"></div>
+    </div>
+    <div class="make-a-wish" id="makeAWish">Make a wish ✨</div>
+    <div class="birthday-message" id="birthdayMessage">
+      I Love You! 💖
+    </div>
+  </section>
+
+  <section class="message scroll-reveal">
+    <p>To my favorite future captain,<br><br>
+      23 years of being amazing, and the best journeys are still ahead.
+      May your skies always be clear, your dreams always take flight,
+      and may every destination bring you closer to happiness.
+      
+      Words saripovu to say how grateful I am to have you in my life.<br><br>
+      Love you ninneeeeeeee ♥</p>
+     </section>
+
+  <div class="wishes scroll-reveal">
+    <div class="wish-card" data-emoji="✈️">✈️ Clear skies & smooth flights</div>
+    <div class="wish-card" data-emoji="🌟">🌟 May all your dreams come true</div>
+    <div class="wish-card" data-emoji="😊">😊 Endless happiness</div>
+    <div class="wish-card" data-emoji="🎉">🎉 The best year ahead</div>
+    <div class="wish-card" data-emoji="💝">💝 Love & laughter always</div>
+  </div>
+
+  <div id="emoji-rain" class="emoji-rain"></div>
+  <div id="heart-plane-flight" class="heart-plane-flight"></div>
+  <div id="takeoff-overlay" class="takeoff-overlay">
+    <div class="runway-strip"></div>
+    <div class="takeoff-plane">✈️</div>
+
+  </div>
+
+  <!-- Gift Box Section -->
+  <section class="gift-section scroll-reveal">
+    <p class="gift-instruction">🎁 Click the gift box to open your surprise!</p>
+    <div class="gift-container" id="giftBox">
+      <div class="gift-box">
+        <div class="gift-lid">
+          <div class="lid-top"></div>
+          <div class="lid-front"></div>
+        </div>
+        <div class="gift-body">
+          <div class="ribbon-v"></div>
+          <div class="ribbon-h"></div>
+          <div class="bow left"></div>
+          <div class="bow right"></div>
+        </div>
+      </div>
+    </div>
+    <div class="gift-inside" id="giftInside">
+      <div class="captain-badge">Captain Level 23 Unlocked ✈️</div>
+      <div class="gift-ticket">
+        <div class="gift-ticket-header">
+          <span class="gt-airline">HAPPY BIRTHDAY AIR ✈️</span>
+          <span class="gt-type">BOARDING PASS</span>
+        </div>
+        <div class="gift-ticket-body">
+          <div class="gt-row gt-passenger">
+            <span class="gt-label">To the pilot who makes my heart take flight ♥</span>
+            <span class="gt-value">Harsha Vardhan Ponnala</span>
+          </div>
+          <div class="gt-row gt-route">
+            <div class="gt-field">
+              <span class="gt-label">FROM</span>
+              <span class="gt-value">Now</span>
+            </div>
+            <div class="gt-dashed"></div>
+            <div class="gt-plane">✈️</div>
+            <div class="gt-dashed"></div>
+            <div class="gt-field">
+              <span class="gt-label">TO</span>
+              <span class="gt-value">Amazing year</span>
+            </div>
+          </div>
+          <div class="gt-row gt-details">
+            <div class="gt-field"><span class="gt-label">FLIGHT</span><span class="gt-value">XB-2024</span></div>
+            <div class="gt-field"><span class="gt-label">GATE</span><span class="gt-value">Love</span></div>
+            <div class="gt-field"><span class="gt-label">SEAT</span><span class="gt-value">Captain</span></div>
+            <div class="gt-field"><span class="gt-label">BOARDING</span><span class="gt-value">CREW</span></div>
+          </div>
+          <div class="gt-row gt-status">
+            <span class="gt-label">STATUS</span>
+            <span class="gt-value status-ready">BOARDING NOW</span>
+          </div>
+        </div>
+        <div class="gift-ticket-perforation"></div>
+        <a href="https://www.xbox.com/en-US/games/store/microsoft-flight-simulator-2024/9P38D19T7LRV/0010" class="takeoff-btn">Click here to takeoff! ✈️</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="scroll-reveal">
+    <p>Wherever life takes you,
+      I’ll always be right beside you as your favorite co-pilot ♥</p>
+    <p class="signature">— Hannu</p>
+  </footer>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
