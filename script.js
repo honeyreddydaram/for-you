@@ -32,6 +32,108 @@ function updateCountdown() {
 updateCountdown();
 setInterval(updateCountdown, 1000);
 
+// Happy Birthday tune - Web Audio API
+const musicToggle = document.getElementById('musicToggle');
+let isPlaying = false;
+let hasAutoPlayed = false;
+
+function playNote(ctx, masterGain, freq, startTime, duration) {
+  const osc = ctx.createOscillator();
+  const g = ctx.createGain();
+  osc.connect(g);
+  g.connect(masterGain);
+  osc.frequency.value = freq;
+  osc.type = 'triangle';
+  g.gain.setValueAtTime(0, startTime);
+  g.gain.linearRampToValueAtTime(0.5, startTime + 0.03);
+  g.gain.linearRampToValueAtTime(0.08, startTime + duration);
+  osc.start(startTime);
+  osc.stop(startTime + duration + 0.05);
+}
+
+async function playHappyBirthdayWebAudio() {
+  const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContextClass) throw new Error('Web Audio not supported');
+  const ctx = new AudioContextClass();
+  await ctx.resume();
+  const masterGain = ctx.createGain();
+  masterGain.gain.value = 1;
+  masterGain.connect(ctx.destination);
+
+  const notes = [262, 262, 294, 262, 349, 330, 262, 262, 294, 262, 392, 349, 262, 262, 523, 440, 349, 330, 294, 466, 466, 440, 349, 392, 349];
+  const durs = [0.4, 0.4, 0.6, 0.6, 0.6, 1, 0.4, 0.4, 0.6, 0.6, 0.6, 1, 0.4, 0.4, 0.6, 0.6, 0.6, 0.6, 1, 0.4, 0.4, 0.6, 0.6, 0.6, 1];
+  let t = ctx.currentTime;
+  for (let i = 0; i < notes.length; i++) {
+    playNote(ctx, masterGain, notes[i], t, durs[i] || 0.5);
+    t += (durs[i] || 0.5) + 0.05;
+  }
+  return (t - ctx.currentTime) * 1000;
+}
+
+async function startMusic() {
+  if (isPlaying) return;
+  isPlaying = true;
+  if (musicToggle) {
+    musicToggle.textContent = '🎵 Playing...';
+    musicToggle.disabled = true;
+  }
+
+  let duration = 20000;
+  try {
+    duration = await playHappyBirthdayWebAudio();
+  } catch (e) {
+    if (musicToggle) musicToggle.textContent = '🎵 Play music';
+    musicToggle.disabled = false;
+    isPlaying = false;
+    return;
+  }
+
+  setTimeout(() => {
+    isPlaying = false;
+    if (musicToggle) {
+      musicToggle.textContent = '🎵 Play again';
+      musicToggle.disabled = false;
+    }
+  }, duration + 500);
+}
+
+function tryAutoPlay() {
+  if (hasAutoPlayed) return;
+  hasAutoPlayed = true;
+  document.removeEventListener('click', tryAutoPlay);
+  document.removeEventListener('touchstart', tryAutoPlay);
+  document.removeEventListener('keydown', tryAutoPlay);
+  startMusic();
+}
+
+const musicPrompt = document.getElementById('musicPrompt');
+function hideMusicPromptAndPlay() {
+  if (musicPrompt && !musicPrompt.classList.contains('hidden')) {
+    musicPrompt.classList.add('hidden');
+    tryAutoPlay();
+  }
+}
+musicPrompt?.addEventListener('click', hideMusicPromptAndPlay);
+musicPrompt?.addEventListener('touchstart', hideMusicPromptAndPlay, { passive: true });
+
+document.addEventListener('click', (e) => {
+  if (e.target.closest('.music-toggle')) return;
+  if (musicPrompt && !musicPrompt.classList.contains('hidden')) hideMusicPromptAndPlay();
+  else if (!hasAutoPlayed) tryAutoPlay();
+}, { once: true });
+document.addEventListener('touchstart', (e) => {
+  if (e.target.closest('.music-toggle')) return;
+  if (musicPrompt && !musicPrompt.classList.contains('hidden')) hideMusicPromptAndPlay();
+  else if (!hasAutoPlayed) tryAutoPlay();
+}, { once: true });
+
+musicToggle?.addEventListener('click', (e) => {
+  e.stopPropagation();
+  if (musicPrompt && !musicPrompt.classList.contains('hidden')) musicPrompt.classList.add('hidden');
+  if (!hasAutoPlayed) tryAutoPlay();
+  else if (!isPlaying) startMusic();
+});
+
 // Night sky - Twinkling stars
 const starsContainer = document.getElementById('starsContainer');
 if (starsContainer) {

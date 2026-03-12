@@ -65,6 +65,49 @@ body {
   50% { opacity: 1; transform: scale(1.2); }
 }
 
+/* Music toggle button */
+.music-toggle {
+  position: fixed;
+  bottom: 2rem;
+  right: 1.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  background: rgba(255, 215, 155, 0.15);
+  border: 1px solid rgba(255, 215, 155, 0.5);
+  border-radius: 24px;
+  color: #ffd89b;
+  cursor: pointer;
+  z-index: 100;
+  backdrop-filter: blur(8px);
+  transition: background 0.3s, transform 0.2s;
+}
+.music-toggle:hover {
+  background: rgba(255, 215, 155, 0.25);
+  transform: scale(1.05);
+}
+
+.music-prompt {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(12, 20, 69, 0.85);
+  z-index: 500;
+  cursor: pointer;
+  transition: opacity 0.5s;
+}
+.music-prompt.hidden {
+  pointer-events: none;
+  opacity: 0;
+}
+.music-prompt p {
+  font-size: 1.3rem;
+  color: #ffd89b;
+  padding: 2rem;
+  text-align: center;
+}
+
 /* Runway lights at bottom */
 .runway-lights {
   position: fixed;
@@ -1306,5 +1349,12 @@ footer .signature {
 
   .takeoff-zone .runway-strip {
     bottom: 18px;
+  }
+
+  .music-toggle {
+    bottom: 2.5rem;
+    right: 1rem;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
   }
 }
