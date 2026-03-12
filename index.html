@@ -46,15 +46,16 @@
     }
     .takeoff-zone {
       position: relative;
-      width: 100%;
-      min-height: 120px;
-      margin-top: 3rem;
+      width: 100vw;
+      max-width: 100vw;
+      min-height: 100px;
+      margin: 3rem 0 0 calc(50% - 50vw);
       overflow: visible;
       pointer-events: none;
     }
     .runway-strip {
       position: absolute;
-      bottom: 20px;
+      bottom: 24px;
       left: 0;
       width: 100%;
       height: 4px;
@@ -64,10 +65,10 @@
     }
     .takeoff-plane {
       position: absolute;
-      bottom: 16px;
+      bottom: 18px;
       left: 0;
       font-size: 2.5rem;
-      transform: translate3d(-60px, 0, 0) rotate(-5deg);
+      transform: translate3d(0, 0, 0) rotate(-5deg);
       opacity: 0;
       will-change: transform;
     }
@@ -80,13 +81,13 @@
     }
     @keyframes runwayTakeoff {
       0% {
-        transform: translateX(-60px) translateY(0) rotate(-5deg) scale(0.9);
+        transform: translate3d(0, 0, 0) rotate(-5deg) scale(0.9);
       }
       40% {
-        transform: translateX(40vw) translateY(0) rotate(-2deg) scale(1);
+        transform: translate3d(45vw, 0, 0) rotate(-2deg) scale(1);
       }
       100% {
-        transform: translateX(calc(100vw + 80px)) translateY(-40px) rotate(8deg) scale(1.1);
+        transform: translate3d(calc(100vw + 40px), -30px, 0) rotate(8deg) scale(1.1);
       }
     }
   </style>
@@ -231,7 +232,7 @@
           </div>
           <div class="gt-row gt-details">
             <div class="gt-field"><span class="gt-label">FLIGHT</span><span class="gt-value">XB-2024</span></div>
-            <div class="gt-field"><span class="gt-label">GATE</span><span class="gt-value">Love</span></div>
+            <div class="gt-field"><span class="gt-label">GATE</span><span class="gt-value">23</span></div>
             <div class="gt-field"><span class="gt-label">SEAT</span><span class="gt-value">Captain</span></div>
             <div class="gt-field"><span class="gt-label">BOARDING</span><span class="gt-value">CREW</span></div>
           </div>

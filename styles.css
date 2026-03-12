@@ -1249,4 +1249,18 @@ footer .signature {
   .gt-route .gt-field {
     min-width: 50px;
   }
+
+  .takeoff-zone {
+    min-height: 80px;
+    margin-left: calc(50% - 50vw);
+  }
+
+  .takeoff-zone .takeoff-plane {
+    font-size: 2rem;
+    bottom: 14px;
+  }
+
+  .takeoff-zone .runway-strip {
+    bottom: 18px;
+  }
 }
